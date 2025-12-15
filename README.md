@@ -9,3 +9,7 @@ This repository contains the initial scaffold for the Graphic Novel Toolkit, a c
 - docs/COSTS_AND_LIMITS.md — AI cost protections and limits
 - docs/PRINT.md — Print-ready requirements
 - docs/LICENSING_REGISTRY.md — Approved sources for licensed knowledge
+
+## How to run
+- `npm install`
+- `npm run dev`
