@@ -1,0 +1,93 @@
+:root {
+  --foreground-rgb: 12, 12, 14;
+  --background-rgb: 245, 246, 248;
+  --border-rgb: 220, 224, 230;
+  --accent-rgb: 37, 99, 235;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background: rgb(var(--background-rgb));
+  color: rgb(var(--foreground-rgb));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  color: rgb(var(--accent-rgb));
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.page {
+  width: min(720px, 100%);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid rgb(var(--border-rgb));
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(var(--foreground-rgb), 0.7);
+}
+
+h1 {
+  font-size: clamp(28px, 3vw, 34px);
+  line-height: 1.2;
+}
+
+.lede {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(var(--foreground-rgb), 0.8);
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.links a {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgb(var(--border-rgb));
+  background: #f7f8fb;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.links a:hover,
+.links a:focus-visible {
+  border-color: rgb(var(--accent-rgb));
+  transform: translateY(-1px);
+}
