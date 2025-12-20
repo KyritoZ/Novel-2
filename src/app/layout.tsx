@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import "./globals.css";
 
@@ -14,7 +15,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <nav className="top-nav">
+          <div className="nav-inner">
+            <Link href="/">Home</Link>
+            <Link href="/story">Story</Link>
+            <Link href="/character-studio">Character Studio</Link>
+            <Link href="/rules">Rules</Link>
+            <Link href="/docs">Docs</Link>
+          </div>
+        </nav>
+        <div className="app-shell">{children}</div>
+      </body>
     </html>
   );
 }

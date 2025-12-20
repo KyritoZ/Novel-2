@@ -10,8 +10,10 @@ export default function Home() {
           AGENTS.md.
         </p>
         <div className="links">
-          <a href="/AGENTS.md">Rules (AGENTS.md)</a>
-          <a href="/docs/PRD.md">Docs (PRD)</a>
+          <a href="/rules">Rules (AGENTS.md)</a>
+          <a href="/docs/prd">Docs (PRD)</a>
+          <a href="/story">Story</a>
+          <a href="/character-studio">Character Studio</a>
         </div>
       </section>
     </main>
