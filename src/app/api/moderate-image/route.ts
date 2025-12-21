@@ -66,7 +66,13 @@ export async function POST(request: Request) {
     };
 
     const result = data.results?.[0];
-    const flagged = result?.flagged === true;
+    if (!result) {
+      return NextResponse.json(
+        { allow: false, reason: "moderation_unavailable" },
+        { status: 503 }
+      );
+    }
+    const flagged = result.flagged === true;
 
     return NextResponse.json({
       allow: !flagged,
