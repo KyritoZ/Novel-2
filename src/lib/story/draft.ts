@@ -1,3 +1,5 @@
+import type { StoryFormat, StoryLength, DigitalLayout } from "./types";
+
 export interface StoryDraft {
   id: string;
   version: string;
@@ -23,8 +25,9 @@ export interface StoryDraft {
     intensity?: number;
   };
   step5?: {
-    length?: string;
-    format?: string;
+    length?: StoryLength;
+    format?: StoryFormat;
+    layout?: DigitalLayout;
     custom?: string;
   };
   outline?: {
@@ -37,14 +40,79 @@ export interface StoryDraft {
   updatedAt: string;
 }
 
-const STORAGE_KEY = "gnt.storyDraft.v1";
+const STORAGE_KEY_V1 = "gnt.storyDraft.v1";
+const STORAGE_KEY_V2 = "gnt.storyDraft.v2";
+
+// Normalize old format values to new types
+function normalizeFormat(value: string | undefined): StoryFormat | undefined {
+  if (!value) return undefined;
+  if (value === "digital" || value === "print") return value;
+  // Old values that should map to digital
+  if (["oneshot", "short", "series", "webtoon"].includes(value)) return "digital";
+  if (value === "print-first") return "print";
+  return "digital"; // default fallback
+}
+
+function normalizeLength(value: string | undefined): StoryLength | undefined {
+  if (!value) return undefined;
+  if (["oneshot", "short", "graphic-novel", "series"].includes(value)) {
+    return value as StoryLength;
+  }
+  // Map old values
+  if (value === "print-first") return "graphic-novel";
+  return undefined;
+}
+
+function normalizeLayout(value: string | undefined, length?: string): DigitalLayout | undefined {
+  if (value === "pages" || value === "webtoon") return value;
+  // Infer from old length values
+  if (length === "webtoon") return "webtoon";
+  return undefined;
+}
 
 export function loadDraft(): StoryDraft | null {
   if (typeof window === "undefined") return null;
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
-    return JSON.parse(stored) as StoryDraft;
+    // Try v2 first
+    let stored = localStorage.getItem(STORAGE_KEY_V2);
+    if (stored) {
+      const draft = JSON.parse(stored) as StoryDraft;
+      // Normalize to ensure type safety
+      if (draft.step5) {
+        draft.step5.format = normalizeFormat(draft.step5.format);
+        draft.step5.length = normalizeLength(draft.step5.length);
+        draft.step5.layout = normalizeLayout(draft.step5.layout, draft.step5.length);
+      }
+      return draft;
+    }
+    
+    // Migrate from v1 if it exists
+    stored = localStorage.getItem(STORAGE_KEY_V1);
+    if (stored) {
+      const oldDraft = JSON.parse(stored) as StoryDraft;
+      // Normalize old format
+      if (oldDraft.step5) {
+        const oldFormat = oldDraft.step5.format || oldDraft.step5.length;
+        const oldLength = oldDraft.step5.length;
+        
+        oldDraft.step5.format = normalizeFormat(oldFormat);
+        oldDraft.step5.length = normalizeLength(oldLength);
+        oldDraft.step5.layout = normalizeLayout(oldDraft.step5.layout, oldLength);
+        
+        // Remove invalid format if it was the same as length
+        if (oldDraft.step5.format === oldDraft.step5.length) {
+          oldDraft.step5.length = normalizeLength(oldLength);
+        }
+      }
+      
+      oldDraft.version = "2.0";
+      // Save as v2 and remove v1
+      localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(oldDraft));
+      localStorage.removeItem(STORAGE_KEY_V1);
+      return oldDraft;
+    }
+    
+    return null;
   } catch {
     return null;
   }
@@ -54,7 +122,16 @@ export function saveDraft(draft: StoryDraft): void {
   if (typeof window === "undefined") return;
   try {
     draft.updatedAt = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+    draft.version = "2.0";
+    // Normalize before saving
+    if (draft.step5) {
+      draft.step5.format = normalizeFormat(draft.step5.format);
+      draft.step5.length = normalizeLength(draft.step5.length);
+      draft.step5.layout = normalizeLayout(draft.step5.layout, draft.step5.length);
+    }
+    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(draft));
+    // Clean up old v1 if it exists
+    localStorage.removeItem(STORAGE_KEY_V1);
   } catch (error) {
     console.error("Failed to save draft:", error);
   }
@@ -63,7 +140,8 @@ export function saveDraft(draft: StoryDraft): void {
 export function clearDraft(): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY_V1);
+    localStorage.removeItem(STORAGE_KEY_V2);
   } catch (error) {
     console.error("Failed to clear draft:", error);
   }
@@ -72,7 +150,7 @@ export function clearDraft(): void {
 export function createDraft(): StoryDraft {
   return {
     id: `draft-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    version: "1.0",
+    version: "2.0",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

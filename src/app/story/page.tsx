@@ -26,7 +26,7 @@ export default function StoryPage() {
           ? `${draft.step2.name}'s Story`
           : "Untitled Story",
         mode: "guided" as const,
-        format: (draft.step5?.format as "digital" | "print") || "digital",
+        format: draft.step5?.format || "digital",
         emotionPalette: draft.step4?.emotions || [],
       }
     : sampleStory;
