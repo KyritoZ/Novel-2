@@ -60,6 +60,7 @@ function normalizeLength(value: string | undefined): StoryLength | undefined {
   }
   // Map old values
   if (value === "print-first") return "graphic-novel";
+  if (value === "webtoon") return "series";
   return undefined;
 }
 
@@ -68,6 +69,16 @@ function normalizeLayout(value: string | undefined, length?: string): DigitalLay
   // Infer from old length values
   if (length === "webtoon") return "webtoon";
   return undefined;
+}
+
+// Repair Step 5: ensure webtoon layout has series length
+function repairStep5(draft: StoryDraft): void {
+  if (!draft.step5) return;
+  
+  // If layout is webtoon but length is missing, set length to series
+  if (draft.step5.layout === "webtoon" && !draft.step5.length) {
+    draft.step5.length = "series";
+  }
 }
 
 export function loadDraft(): StoryDraft | null {
@@ -82,6 +93,8 @@ export function loadDraft(): StoryDraft | null {
         draft.step5.format = normalizeFormat(draft.step5.format);
         draft.step5.length = normalizeLength(draft.step5.length);
         draft.step5.layout = normalizeLayout(draft.step5.layout, draft.step5.length);
+        // Repair: ensure webtoon layout has series length
+        repairStep5(draft);
       }
       return draft;
     }
@@ -103,6 +116,9 @@ export function loadDraft(): StoryDraft | null {
         if (oldDraft.step5.format === oldDraft.step5.length) {
           oldDraft.step5.length = normalizeLength(oldLength);
         }
+        
+        // Repair: ensure webtoon layout has series length
+        repairStep5(oldDraft);
       }
       
       oldDraft.version = "2.0";
@@ -128,6 +144,8 @@ export function saveDraft(draft: StoryDraft): void {
       draft.step5.format = normalizeFormat(draft.step5.format);
       draft.step5.length = normalizeLength(draft.step5.length);
       draft.step5.layout = normalizeLayout(draft.step5.layout, draft.step5.length);
+      // Repair: ensure webtoon layout has series length
+      repairStep5(draft);
     }
     localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(draft));
     // Clean up old v1 if it exists

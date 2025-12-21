@@ -298,18 +298,16 @@ export default function GuidedStoryPage() {
     });
   }
 
-  function handleStep5(
-    length?: StoryLength,
-    format?: StoryFormat,
-    layout?: DigitalLayout,
-    custom?: string,
-  ) {
+  function handleStep5(updates: {
+    length?: StoryLength;
+    format?: StoryFormat;
+    layout?: DigitalLayout;
+    custom?: string;
+  }) {
     updateDraft({
       step5: {
-        length,
-        format,
-        layout,
-        custom,
+        ...draft?.step5,
+        ...updates,
       },
     });
   }
@@ -738,7 +736,11 @@ export default function GuidedStoryPage() {
                           type="button"
                           className={`studio-tab ${isSelected ? "active" : ""}`}
                           onClick={() =>
-                            handleStep5(option.length, option.format, option.layout)
+                            handleStep5({
+                              length: option.length,
+                              format: option.format,
+                              layout: option.layout,
+                            })
                           }
                           style={{ textAlign: "left", justifyContent: "flex-start" }}
                         >
@@ -755,7 +757,7 @@ export default function GuidedStoryPage() {
                     className="input"
                     placeholder="e.g., A 3-volume manga series..."
                     value={draft.step5?.custom || ""}
-                    onChange={(e) => handleStep5(undefined, undefined, undefined, e.target.value)}
+                    onChange={(e) => handleStep5({ custom: e.target.value })}
                   />
                 </div>
 
