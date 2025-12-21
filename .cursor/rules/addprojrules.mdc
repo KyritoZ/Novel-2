@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+git add .cursor/rules
+git commit -m "Add Cursor project rules"
+git push

@@ -1,0 +1,15 @@
+---
+alwaysApply: true
+---
+---
+description: Core rules for Graphic Novel Toolkit
+globs: "**/*"
+alwaysApply: true
+---
+
+- Before making changes, read and follow AGENTS.md.
+- Prefer the smallest safe change (avoid refactors).
+- After code changes, run: npm run build (and fix failures).
+- Do not add new dependencies unless explicitly requested.
+- Keep print/export constraints in mind; see docs/PRINT.md.
+- Never commit secrets or keys.
