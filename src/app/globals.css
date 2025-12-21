@@ -322,6 +322,65 @@ h1 {
   font-size: 14px;
 }
 
+.wizard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 24px;
+}
+
+.wizard-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.wizard-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(var(--foreground-rgb), 0.7);
+}
+
+.wizard-step.active {
+  color: rgb(var(--foreground-rgb));
+  font-weight: 700;
+}
+
+.option-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.wizard-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.coach-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.coach-card {
+  border: 1px solid rgb(var(--border-rgb));
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .wizard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .studio-layout {
     grid-template-columns: 1fr;

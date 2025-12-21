@@ -12,7 +12,8 @@ export default function Home() {
         <div className="links">
           <a href="/rules">Rules (AGENTS.md)</a>
           <a href="/docs/prd">Docs (PRD)</a>
-          <a href="/story">Story</a>
+          <a href="/story/guided">Guided Story Mode</a>
+          <a href="/story">Sandbox</a>
           <a href="/character-studio">Character Studio</a>
         </div>
       </section>
