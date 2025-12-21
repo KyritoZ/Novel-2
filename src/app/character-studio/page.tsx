@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import NextImage from "next/image";
 import type { CharacterAsset, CharacterLibrary } from "@/lib/characters/types";
 import { addAsset, deleteAsset, loadLibrary } from "@/lib/characters/storage";
 
@@ -236,8 +237,14 @@ export default function CharacterStudioPage() {
                 </div>
 
                 <div className="preview">
-                  {uploadPreview ? (
-                    <img src={uploadPreview} alt="Upload preview" />
+                  {uploadPreview && uploadDimensions ? (
+                    <NextImage
+                      src={uploadPreview}
+                      alt="Upload preview"
+                      width={uploadDimensions.width}
+                      height={uploadDimensions.height}
+                      unoptimized
+                    />
                   ) : (
                     <p className="lede">Upload an image to preview it here.</p>
                   )}
@@ -337,7 +344,13 @@ export default function CharacterStudioPage() {
               <div className="gallery-grid">
                 {sortedAssets.map((asset) => (
                   <div className="gallery-card" key={asset.id}>
-                    <img src={asset.dataUrl} alt={asset.name} />
+                    <NextImage
+                      src={asset.dataUrl}
+                      alt={asset.name}
+                      width={asset.width}
+                      height={asset.height}
+                      unoptimized
+                    />
                     <div className="gallery-meta">
                       <strong>{asset.name}</strong>
                       <span>
