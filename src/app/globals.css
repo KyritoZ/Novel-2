@@ -30,12 +30,89 @@ a:focus-visible {
   color: rgb(var(--accent-rgb));
 }
 
-main {
+.app-shell {
+  display: flex;
   min-height: 100vh;
+  background: rgb(var(--background-rgb));
+}
+
+.app-sidebar {
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid rgb(var(--border-rgb));
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.app-sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid rgb(var(--border-rgb));
+}
+
+.app-sidebar-nav {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.app-sidebar-link {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  color: rgba(var(--foreground-rgb), 0.8);
+}
+
+.app-sidebar-link:hover,
+.app-sidebar-link:focus-visible {
+  background: #f7f8fb;
+  color: rgb(var(--accent-rgb));
+}
+
+.app-sidebar-link.active {
+  background: rgba(var(--accent-rgb), 0.1);
+  color: rgb(var(--accent-rgb));
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-topbar {
+  background: #fff;
+  border-bottom: 1px solid rgb(var(--border-rgb));
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+main {
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 0;
+}
+
+main.dashboard {
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .page {
@@ -51,6 +128,14 @@ main {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a.card:hover,
+a.card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+  border-color: rgb(var(--accent-rgb));
 }
 
 .eyebrow {
@@ -278,5 +363,33 @@ h1 {
 @media (max-width: 900px) {
   .studio-layout {
     grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgb(var(--border-rgb));
+  }
+
+  .app-sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px 16px;
+  }
+
+  .app-sidebar-link {
+    white-space: nowrap;
   }
 }
