@@ -2,6 +2,10 @@ export type StoryMode = "guided" | "sandbox" | "inspiration";
 
 export type StoryFormat = "digital" | "print";
 
+export type StoryLength = "oneshot" | "short" | "graphic-novel" | "series";
+
+export type DigitalLayout = "pages" | "webtoon";
+
 export interface Story {
   id: string;
   title: string;

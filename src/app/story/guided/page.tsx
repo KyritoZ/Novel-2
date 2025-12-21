@@ -11,7 +11,14 @@ import {
   type StoryDraft,
 } from "@/lib/story/draft";
 import { generateCoachCards } from "@/lib/story/coachRules";
-import type { CoachCard, Character, Story } from "@/lib/story/types";
+import type {
+  CoachCard,
+  Character,
+  Story,
+  StoryLength,
+  StoryFormat,
+  DigitalLayout,
+} from "@/lib/story/types";
 
 const STORY_TYPES = [
   "Adventure",
@@ -79,12 +86,17 @@ const EMOTIONS = [
   "Forgiveness",
 ];
 
-const LENGTH_FORMATS = [
-  { value: "oneshot", label: "One-Shot" },
-  { value: "short", label: "Short (3-10 pages)" },
-  { value: "series", label: "Series (multi-chapter)" },
-  { value: "webtoon", label: "Webtoon (episodic)" },
-  { value: "print-first", label: "Print-First (graphic novel)" },
+const LENGTH_FORMATS: Array<{
+  label: string;
+  length: StoryLength;
+  format: StoryFormat;
+  layout?: DigitalLayout;
+}> = [
+  { label: "One-Shot", length: "oneshot", format: "digital", layout: "pages" },
+  { label: "Short (3-10 pages)", length: "short", format: "digital", layout: "pages" },
+  { label: "Series (multi-chapter)", length: "series", format: "digital", layout: "pages" },
+  { label: "Webtoon (episodic)", length: "series", format: "digital", layout: "webtoon" },
+  { label: "Print-First (graphic novel)", length: "graphic-novel", format: "print" },
 ];
 
 export default function GuidedStoryPage() {
@@ -124,7 +136,7 @@ export default function GuidedStoryPage() {
       id: draft.id,
       title: "Untitled Story",
       mode: "guided",
-      format: (draft.step5?.format as "digital" | "print") || "digital",
+      format: draft.step5?.format || "digital",
       emotionPalette: draft.step4?.emotions || [],
       sensitivityLevel: "all-ages",
     };
@@ -280,16 +292,23 @@ export default function GuidedStoryPage() {
     updateDraft({
       step4: {
         emotions,
-        intensity,
+        // Preserve existing intensity if not provided, default to 5
+        intensity: intensity ?? draft?.step4?.intensity ?? 5,
       },
     });
   }
 
-  function handleStep5(length?: string, format?: string, custom?: string) {
+  function handleStep5(
+    length?: StoryLength,
+    format?: StoryFormat,
+    layout?: DigitalLayout,
+    custom?: string,
+  ) {
     updateDraft({
       step5: {
         length,
         format,
+        layout,
         custom,
       },
     });
@@ -643,7 +662,8 @@ export default function GuidedStoryPage() {
                             const updated = isSelected
                               ? current.filter((e) => e !== emotion)
                               : [...current, emotion];
-                            handleStep4(updated);
+                            // Preserve existing intensity when toggling emotions
+                            handleStep4(updated, draft.step4?.intensity);
                           }}
                         >
                           {emotion}
@@ -707,17 +727,25 @@ export default function GuidedStoryPage() {
                 <div className="form-group">
                   <label>Length/Format</label>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {LENGTH_FORMATS.map((format) => (
-                      <button
-                        key={format.value}
-                        type="button"
-                        className={`studio-tab ${draft.step5?.length === format.value ? "active" : ""}`}
-                        onClick={() => handleStep5(format.value, format.value)}
-                        style={{ textAlign: "left", justifyContent: "flex-start" }}
-                      >
-                        {format.label}
-                      </button>
-                    ))}
+                    {LENGTH_FORMATS.map((option, index) => {
+                      const isSelected =
+                        draft.step5?.length === option.length &&
+                        draft.step5?.format === option.format &&
+                        (!option.layout || draft.step5?.layout === option.layout);
+                      return (
+                        <button
+                          key={index}
+                          type="button"
+                          className={`studio-tab ${isSelected ? "active" : ""}`}
+                          onClick={() =>
+                            handleStep5(option.length, option.format, option.layout)
+                          }
+                          style={{ textAlign: "left", justifyContent: "flex-start" }}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -727,7 +755,7 @@ export default function GuidedStoryPage() {
                     className="input"
                     placeholder="e.g., A 3-volume manga series..."
                     value={draft.step5?.custom || ""}
-                    onChange={(e) => handleStep5(undefined, undefined, e.target.value)}
+                    onChange={(e) => handleStep5(undefined, undefined, undefined, e.target.value)}
                   />
                 </div>
 

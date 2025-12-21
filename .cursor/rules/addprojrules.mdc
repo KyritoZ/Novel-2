@@ -1,6 +1,7 @@
 ---
-alwaysApply: true
+description: Additional project rules
+globs: "**/*"
+alwaysApply: false
 ---
-git add .cursor/rules
-git commit -m "Add Cursor project rules"
-git push
+
+This file is reserved for future project-specific rules.
