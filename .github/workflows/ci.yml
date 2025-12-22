@@ -22,9 +22,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check dependency matrix
+        run: npm run check:matrix
+
       - name: Run linter
         run: npm run lint
 
       - name: Build project
         run: npm run build
+
+      - name: Audit dependencies
+        run: npm audit --omit=dev --audit-level=critical
 

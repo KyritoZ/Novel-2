@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+# Release Gate Rules (must follow)
+
+## Required before saying “ready to merge”
+- npm ci
+- npm run release:check
+
+## Dependency matrix
+- If Next major >= 15 and App Router exists (src/app or app):
+  - react and react-dom must be >= 19
+- eslint-config-next must exactly match next
+
+## Safety
+- Never use --force or --legacy-peer-deps
+- Never force-push or rewrite history
+
