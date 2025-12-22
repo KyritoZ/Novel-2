@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "check:matrix": "node scripts/check-framework-matrix.mjs",
     "release:check": "npm run check:matrix && npm run lint && npm run build && npm audit --omit=dev --audit-level=critical"
   },
